@@ -15,6 +15,7 @@
 #include "jsonl_reporter.hpp"
 #include "stdout_file_reporter.hpp"
 #include "tenet_tracer.hpp"
+#include "oep_detector.hpp"
 
 #include <utils/finally.hpp>
 #include <utils/interupt_handler.hpp>
@@ -66,6 +67,7 @@ namespace sogen
             std::filesystem::path minidump_path{};
             std::filesystem::path report_path{};
             std::filesystem::path stdout_path{};
+            std::filesystem::path oep_report_path{};
             std::string report_format{"jsonl"};
             std::string whp_execution_hook_mode{"auto"};
             std::optional<backend_type> backend{};
@@ -672,6 +674,11 @@ namespace sogen
             }
 
             register_analysis_callbacks(context);
+            std::optional<oep_detector> oep{};
+            if (!options.oep_report_path.empty())
+            {
+                oep.emplace(*win_emu, options.oep_report_path);
+            }
             watch_system_objects(context, options.modules, options.verbose_logging, options.concise_logging);
 
             const auto& exe = *win_emu->mod_manager.executable;
@@ -832,7 +839,12 @@ namespace sogen
                 }
             }
 
-            return run_emulation(context, options);
+            const auto success = run_emulation(context, options);
+            if (oep)
+            {
+                oep->finish(success);
+            }
+            return success;
         }
 
         int run_main(int argc, char** argv)
@@ -898,6 +910,7 @@ namespace sogen
             app.add_option("--report", options.report_path, "Write machine-readable analysis events to a file");
             app.add_option("--report-format", options.report_format, "Report format (supported: jsonl)")->capture_default_str();
             app.add_option("--stdout", options.stdout_path, "Write guest console output to a file");
+            app.add_option("--oep-report", options.oep_report_path, "Find x64 entry handoff candidates and write JSONL evidence");
             app.add_option("--whp-exec-hook", options.whp_execution_hook_mode, "WHP memory execution hook mode")
                 ->capture_default_str()
                 ->check(CLI::IsMember({"auto", "int3"}));
