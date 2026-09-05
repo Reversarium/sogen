@@ -1,0 +1,84 @@
+{
+  "baseline_rva": "0x1000",
+  "all_fixtures_passed": true,
+  "analyzer_sha256": "d31dd995999a5e87f5074d56e08db0804954f7f3b2514da1b9358c2d80e39451",
+  "backend": "Unicorn",
+  "options": [
+    "--no-inst-precision",
+    "--reproducible"
+  ],
+  "validation": {
+    "entry_handoff_tests": "5 passed",
+    "test_sample_smoke": "passed",
+    "targeted_clang_tidy": "new files and changed main.cpp lines passed",
+    "full_tidy": "failed on unchanged platform headers: redundant typename"
+  },
+  "fixtures": [
+    {
+      "fixture": "hello-x64.exe",
+      "sha256": "b3e0e1caeb68cc0aa61eb24300e8dfc973af24f0d5c2112bbb57223802711342",
+      "entry_rva": "0x1000",
+      "status": "no_candidate",
+      "candidate_rvas": [],
+      "restored_stack_blocks": 0,
+      "observed_blocks": 3826,
+      "seconds": 1.179,
+      "prefix_matches": null,
+      "all_64_bytes_match": null,
+      "output_matches_baseline": true,
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "fixture": "hello-x64-351.vmp.exe",
+      "sha256": "d37297489277db2a767c79f6ba4080d27480134a61376f319b1f8d028924d743",
+      "entry_rva": "0x34defc",
+      "status": "unique_candidate",
+      "candidate_rvas": [
+        "0x1000"
+      ],
+      "restored_stack_blocks": 1,
+      "observed_blocks": 105508593,
+      "seconds": 8.002,
+      "prefix_matches": true,
+      "all_64_bytes_match": false,
+      "output_matches_baseline": true,
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "fixture": "hello-x64-381.vmp.exe",
+      "sha256": "3ce0f13010d9b012e56e24923c2172c462ba680f6f951ddc3b690996005592eb",
+      "entry_rva": "0x1cb8a99",
+      "status": "unique_candidate",
+      "candidate_rvas": [
+        "0x1000"
+      ],
+      "restored_stack_blocks": 1,
+      "observed_blocks": 1241556074,
+      "seconds": 94.968,
+      "prefix_matches": true,
+      "all_64_bytes_match": false,
+      "output_matches_baseline": true,
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "fixture": "hello-x64-396.vmp.exe",
+      "sha256": "4572c87f7703ad9717e07db6cddf2f5f3db6559890c0a6a840b8ae3ce3dd3915",
+      "entry_rva": "0x1ba274a",
+      "status": "unique_candidate",
+      "candidate_rvas": [
+        "0x1000"
+      ],
+      "restored_stack_blocks": 1,
+      "observed_blocks": 1408429258,
+      "seconds": 110.635,
+      "prefix_matches": true,
+      "all_64_bytes_match": false,
+      "output_matches_baseline": true,
+      "exit_code": 0,
+      "passed": true
+    }
+  ]
+}

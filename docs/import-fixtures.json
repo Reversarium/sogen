@@ -1,0 +1,939 @@
+{
+  "schema": 1,
+  "system": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.13",
+  "analyzer_sha256": "fd508ae2eca715dfdae6ed55d5efda89031085a6d4d26c73d7da98b25f17f144",
+  "unicorn_sha256": "6bc7d064376c6e0ebdd604709ed565ec9c29667aa75b61b74d1870b29b96b6af",
+  "baseline": {
+    "name": "hello-x64.exe",
+    "sha256": "b3e0e1caeb68cc0aa61eb24300e8dfc973af24f0d5c2112bbb57223802711342",
+    "imports": [
+      [
+        "kernel32.dll",
+        "ExitProcess"
+      ],
+      [
+        "kernel32.dll",
+        "GetStdHandle"
+      ],
+      [
+        "kernel32.dll",
+        "WriteFile"
+      ]
+    ],
+    "apis": [
+      [
+        "kernel32.dll",
+        "GetStdHandle"
+      ],
+      [
+        "kernel32.dll",
+        "WriteFile"
+      ],
+      [
+        "kernel32.dll",
+        "ExitProcess"
+      ]
+    ],
+    "native_runs": [
+      {
+        "exit_code": 0,
+        "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+        "stderr_hex": "",
+        "seconds": 0.016591
+      },
+      {
+        "exit_code": 0,
+        "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+        "stderr_hex": "",
+        "seconds": 0.012787
+      },
+      {
+        "exit_code": 0,
+        "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+        "stderr_hex": "",
+        "seconds": 0.012426
+      }
+    ]
+  },
+  "fixtures": [
+    {
+      "fixture": "hello-x64-351.vmp.exe",
+      "input_sha256": "d37297489277db2a767c79f6ba4080d27480134a61376f319b1f8d028924d743",
+      "capture_analyzer_sha256": "fd508ae2eca715dfdae6ed55d5efda89031085a6d4d26c73d7da98b25f17f144",
+      "capture_unicorn_sha256": "6bc7d064376c6e0ebdd604709ed565ec9c29667aa75b61b74d1870b29b96b6af",
+      "capture_seconds": 7.831,
+      "recovery_seconds": 0.014551,
+      "trace_result": {
+        "event": "result",
+        "completed": true,
+        "started": true,
+        "candidate_count": 1,
+        "instructions": 17113,
+        "image_instructions": 62
+      },
+      "image_size": 4857856,
+      "entry_rva": 4096,
+      "repaired_sites": [
+        {
+          "site_rva": 4113,
+          "length": 6,
+          "module": "kernel32.dll",
+          "name": "GetStdHandle",
+          "continuation_rva": 4119,
+          "call_rva": 4114,
+          "sequence": 4,
+          "api_sequence": 19,
+          "wrapper_instructions": 15,
+          "private_stack_writes": 5,
+          "compared_stack_bytes": 192,
+          "all_gpr_except_rsp_equal": true,
+          "all_xmm_equal": true,
+          "returned": true,
+          "iat_rva": 4858024
+        },
+        {
+          "site_rva": 4149,
+          "length": 6,
+          "module": "kernel32.dll",
+          "name": "WriteFile",
+          "continuation_rva": 4155,
+          "call_rva": 4149,
+          "sequence": 45,
+          "api_sequence": 67,
+          "wrapper_instructions": 22,
+          "private_stack_writes": 4,
+          "compared_stack_bytes": 192,
+          "all_gpr_except_rsp_equal": true,
+          "all_xmm_equal": true,
+          "returned": true,
+          "iat_rva": 4858032
+        },
+        {
+          "site_rva": 4157,
+          "length": 6,
+          "module": "kernel32.dll",
+          "name": "ExitProcess",
+          "continuation_rva": 4163,
+          "call_rva": 4158,
+          "sequence": 124,
+          "api_sequence": 140,
+          "wrapper_instructions": 16,
+          "private_stack_writes": 5,
+          "compared_stack_bytes": 192,
+          "all_gpr_except_rsp_equal": true,
+          "all_xmm_equal": true,
+          "returned": false,
+          "iat_rva": 4858040
+        }
+      ],
+      "imports": [
+        [
+          "kernel32.dll",
+          "ExitProcess"
+        ],
+        [
+          "kernel32.dll",
+          "GetModuleFileNameW"
+        ],
+        [
+          "kernel32.dll",
+          "GetModuleHandleA"
+        ],
+        [
+          "kernel32.dll",
+          "GetProcAddress"
+        ],
+        [
+          "kernel32.dll",
+          "GetProcessAffinityMask"
+        ],
+        [
+          "kernel32.dll",
+          "GetStdHandle"
+        ],
+        [
+          "kernel32.dll",
+          "LoadLibraryA"
+        ],
+        [
+          "kernel32.dll",
+          "LocalAlloc"
+        ],
+        [
+          "kernel32.dll",
+          "LocalFree"
+        ],
+        [
+          "kernel32.dll",
+          "SetProcessAffinityMask"
+        ],
+        [
+          "kernel32.dll",
+          "SetThreadAffinityMask"
+        ],
+        [
+          "kernel32.dll",
+          "Sleep"
+        ],
+        [
+          "kernel32.dll",
+          "WriteFile"
+        ]
+      ],
+      "additional_imports": [
+        [
+          "kernel32.dll",
+          "GetModuleFileNameW"
+        ],
+        [
+          "kernel32.dll",
+          "GetModuleHandleA"
+        ],
+        [
+          "kernel32.dll",
+          "GetProcAddress"
+        ],
+        [
+          "kernel32.dll",
+          "GetProcessAffinityMask"
+        ],
+        [
+          "kernel32.dll",
+          "LoadLibraryA"
+        ],
+        [
+          "kernel32.dll",
+          "LocalAlloc"
+        ],
+        [
+          "kernel32.dll",
+          "LocalFree"
+        ],
+        [
+          "kernel32.dll",
+          "SetProcessAffinityMask"
+        ],
+        [
+          "kernel32.dll",
+          "SetThreadAffinityMask"
+        ],
+        [
+          "kernel32.dll",
+          "Sleep"
+        ]
+      ],
+      "recovered_imports": [
+        {
+          "module": "kernel32.dll",
+          "name": "ExitProcess",
+          "iat_rva": 4858040
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "GetStdHandle",
+          "iat_rva": 4858024
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "WriteFile",
+          "iat_rva": 4858032
+        }
+      ],
+      "retained_imports": [
+        {
+          "module": "kernel32.dll",
+          "name": "WriteFile",
+          "iat_rva": 1507328
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "LocalAlloc",
+          "iat_rva": 1507344
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "LocalFree",
+          "iat_rva": 1507352
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "GetModuleFileNameW",
+          "iat_rva": 1507360
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "GetProcessAffinityMask",
+          "iat_rva": 1507368
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "SetProcessAffinityMask",
+          "iat_rva": 1507376
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "SetThreadAffinityMask",
+          "iat_rva": 1507384
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "Sleep",
+          "iat_rva": 1507392
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "ExitProcess",
+          "iat_rva": 1507400
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "LoadLibraryA",
+          "iat_rva": 1507408
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "GetModuleHandleA",
+          "iat_rva": 1507416
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "GetProcAddress",
+          "iat_rva": 1507424
+        }
+      ],
+      "unresolved_transitions": [],
+      "output_sha256": "7761bc5f6ee12ff9eaf8aa27d41d1f4ede920f3ce86ef6a2c92313e21455b734",
+      "output_size": 4834816,
+      "native_runs": [
+        {
+          "exit_code": 0,
+          "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+          "stderr_hex": "",
+          "seconds": 0.626384
+        },
+        {
+          "exit_code": 0,
+          "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+          "stderr_hex": "",
+          "seconds": 0.01456
+        },
+        {
+          "exit_code": 0,
+          "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+          "stderr_hex": "",
+          "seconds": 0.015394
+        }
+      ],
+      "native_median_seconds": 0.015394,
+      "replay_seconds": 0.424,
+      "replay_apis": [
+        [
+          "kernel32.dll",
+          "GetStdHandle"
+        ],
+        [
+          "kernel32.dll",
+          "WriteFile"
+        ],
+        [
+          "kernel32.dll",
+          "ExitProcess"
+        ]
+      ],
+      "checks": {
+        "retained_import_slots_preserved": true,
+        "baseline_imports_recovered": true,
+        "native_output_matches_baseline": true,
+        "fresh_sogen_execution_passed": true,
+        "fresh_api_sequence_matches_baseline": true,
+        "fresh_sogen_stdout_matches_baseline": true
+      },
+      "passed": true
+    },
+    {
+      "fixture": "hello-x64-381.vmp.exe",
+      "input_sha256": "3ce0f13010d9b012e56e24923c2172c462ba680f6f951ddc3b690996005592eb",
+      "capture_analyzer_sha256": "fd508ae2eca715dfdae6ed55d5efda89031085a6d4d26c73d7da98b25f17f144",
+      "capture_unicorn_sha256": "6bc7d064376c6e0ebdd604709ed565ec9c29667aa75b61b74d1870b29b96b6af",
+      "capture_seconds": 103.823,
+      "recovery_seconds": 0.09142,
+      "trace_result": {
+        "event": "result",
+        "completed": true,
+        "started": true,
+        "candidate_count": 1,
+        "instructions": 14838,
+        "image_instructions": 624
+      },
+      "image_size": 41205760,
+      "entry_rva": 4096,
+      "repaired_sites": [
+        {
+          "site_rva": 4113,
+          "length": 6,
+          "module": "kernel32.dll",
+          "name": "GetStdHandle",
+          "continuation_rva": 4119,
+          "call_rva": 4113,
+          "sequence": 4,
+          "api_sequence": 73,
+          "wrapper_instructions": 69,
+          "private_stack_writes": 22,
+          "compared_stack_bytes": 192,
+          "all_gpr_except_rsp_equal": true,
+          "all_xmm_equal": true,
+          "returned": true,
+          "iat_rva": 41205968
+        },
+        {
+          "site_rva": 4149,
+          "length": 6,
+          "module": "kernel32.dll",
+          "name": "WriteFile",
+          "continuation_rva": 4155,
+          "call_rva": 4149,
+          "sequence": 99,
+          "api_sequence": 169,
+          "wrapper_instructions": 70,
+          "private_stack_writes": 25,
+          "compared_stack_bytes": 192,
+          "all_gpr_except_rsp_equal": true,
+          "all_xmm_equal": true,
+          "returned": true,
+          "iat_rva": 41205976
+        },
+        {
+          "site_rva": 4157,
+          "length": 6,
+          "module": "kernel32.dll",
+          "name": "ExitProcess",
+          "continuation_rva": 4163,
+          "call_rva": 4158,
+          "sequence": 226,
+          "api_sequence": 294,
+          "wrapper_instructions": 68,
+          "private_stack_writes": 34,
+          "compared_stack_bytes": 192,
+          "all_gpr_except_rsp_equal": true,
+          "all_xmm_equal": true,
+          "returned": false,
+          "iat_rva": 41205984
+        },
+        {
+          "site_rva": 137558,
+          "length": 6,
+          "module": "kernel32.dll",
+          "name": "HeapFree",
+          "continuation_rva": 137564,
+          "call_rva": 137559,
+          "sequence": 1706,
+          "api_sequence": 1785,
+          "wrapper_instructions": 79,
+          "private_stack_writes": 30,
+          "compared_stack_bytes": 256,
+          "all_gpr_except_rsp_equal": true,
+          "all_xmm_equal": true,
+          "returned": true,
+          "iat_rva": 41205992
+        }
+      ],
+      "imports": [
+        [
+          "kernel32.dll",
+          "ExitProcess"
+        ],
+        [
+          "kernel32.dll",
+          "GetModuleHandleA"
+        ],
+        [
+          "kernel32.dll",
+          "GetProcAddress"
+        ],
+        [
+          "kernel32.dll",
+          "GetStdHandle"
+        ],
+        [
+          "kernel32.dll",
+          "GetSystemTimeAsFileTime"
+        ],
+        [
+          "kernel32.dll",
+          "HeapAlloc"
+        ],
+        [
+          "kernel32.dll",
+          "HeapFree"
+        ],
+        [
+          "kernel32.dll",
+          "LoadLibraryA"
+        ],
+        [
+          "kernel32.dll",
+          "WriteFile"
+        ]
+      ],
+      "additional_imports": [
+        [
+          "kernel32.dll",
+          "GetModuleHandleA"
+        ],
+        [
+          "kernel32.dll",
+          "GetProcAddress"
+        ],
+        [
+          "kernel32.dll",
+          "GetSystemTimeAsFileTime"
+        ],
+        [
+          "kernel32.dll",
+          "HeapAlloc"
+        ],
+        [
+          "kernel32.dll",
+          "HeapFree"
+        ],
+        [
+          "kernel32.dll",
+          "LoadLibraryA"
+        ]
+      ],
+      "recovered_imports": [
+        {
+          "module": "kernel32.dll",
+          "name": "ExitProcess",
+          "iat_rva": 41205984
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "GetStdHandle",
+          "iat_rva": 41205968
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "HeapFree",
+          "iat_rva": 41205992
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "WriteFile",
+          "iat_rva": 41205976
+        }
+      ],
+      "retained_imports": [
+        {
+          "module": "kernel32.dll",
+          "name": "WriteFile",
+          "iat_rva": 15474688
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "GetSystemTimeAsFileTime",
+          "iat_rva": 15474704
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "HeapAlloc",
+          "iat_rva": 15474720
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "HeapFree",
+          "iat_rva": 15474728
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "ExitProcess",
+          "iat_rva": 15474736
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "LoadLibraryA",
+          "iat_rva": 15474744
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "GetModuleHandleA",
+          "iat_rva": 15474752
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "GetProcAddress",
+          "iat_rva": 15474760
+        }
+      ],
+      "unresolved_transitions": [
+        {
+          "sequence": 1377,
+          "module": "ntdll.dll",
+          "name": "RtlEnterCriticalSection",
+          "address": 6442506112,
+          "continuation": 5368850345,
+          "possible_site_rvas": [
+            141220
+          ],
+          "reason": [
+            "argument_or_nonvolatile_gpr",
+            "caller_stack"
+          ]
+        },
+        {
+          "sequence": 1440,
+          "module": "ntdll.dll",
+          "name": "RtlLeaveCriticalSection",
+          "address": 6442506368,
+          "continuation": 5368850402,
+          "possible_site_rvas": [
+            141277
+          ],
+          "reason": [
+            "argument_or_nonvolatile_gpr"
+          ]
+        },
+        {
+          "sequence": 1530,
+          "module": "ntdll.dll",
+          "name": "RtlEnterCriticalSection",
+          "address": 6442506112,
+          "continuation": 5368850412,
+          "possible_site_rvas": [
+            141287
+          ],
+          "reason": [
+            "argument_or_nonvolatile_gpr"
+          ]
+        },
+        {
+          "sequence": 1667,
+          "module": "ntdll.dll",
+          "name": "RtlLeaveCriticalSection",
+          "address": 6442506368,
+          "continuation": 5368850478,
+          "possible_site_rvas": [
+            141353
+          ],
+          "reason": [
+            "argument_or_nonvolatile_gpr"
+          ]
+        },
+        {
+          "sequence": 2291,
+          "address": 6442669087,
+          "reason": "not_a_named_export",
+          "from": 5368850496,
+          "possible_site_rvas": []
+        }
+      ],
+      "output_sha256": "d1b7d259f4ea6b290acfecce29ce8fa7d78ce4d2124954b181f105082a373068",
+      "output_size": 41190400,
+      "native_runs": [
+        {
+          "exit_code": 0,
+          "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+          "stderr_hex": "",
+          "seconds": 1.565775
+        },
+        {
+          "exit_code": 0,
+          "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+          "stderr_hex": "",
+          "seconds": 0.028721
+        },
+        {
+          "exit_code": 0,
+          "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+          "stderr_hex": "",
+          "seconds": 0.027799
+        }
+      ],
+      "native_median_seconds": 0.028721,
+      "replay_seconds": 0.377,
+      "replay_apis": [
+        [
+          "kernel32.dll",
+          "GetStdHandle"
+        ],
+        [
+          "kernel32.dll",
+          "WriteFile"
+        ],
+        [
+          "kernel32.dll",
+          "ExitProcess"
+        ]
+      ],
+      "checks": {
+        "retained_import_slots_preserved": true,
+        "baseline_imports_recovered": true,
+        "native_output_matches_baseline": true,
+        "fresh_sogen_execution_passed": true,
+        "fresh_api_sequence_matches_baseline": true,
+        "fresh_sogen_stdout_matches_baseline": true
+      },
+      "passed": true
+    },
+    {
+      "fixture": "hello-x64-396.vmp.exe",
+      "input_sha256": "4572c87f7703ad9717e07db6cddf2f5f3db6559890c0a6a840b8ae3ce3dd3915",
+      "capture_analyzer_sha256": "fd508ae2eca715dfdae6ed55d5efda89031085a6d4d26c73d7da98b25f17f144",
+      "capture_unicorn_sha256": "6bc7d064376c6e0ebdd604709ed565ec9c29667aa75b61b74d1870b29b96b6af",
+      "capture_seconds": 120.698,
+      "recovery_seconds": 0.080624,
+      "trace_result": {
+        "event": "result",
+        "completed": true,
+        "started": true,
+        "candidate_count": 1,
+        "instructions": 18034,
+        "image_instructions": 803
+      },
+      "image_size": 39448576,
+      "entry_rva": 4096,
+      "repaired_sites": [
+        {
+          "site_rva": 4113,
+          "length": 6,
+          "module": "kernel32.dll",
+          "name": "GetStdHandle",
+          "continuation_rva": 4119,
+          "call_rva": 4113,
+          "sequence": 4,
+          "api_sequence": 81,
+          "wrapper_instructions": 77,
+          "private_stack_writes": 34,
+          "compared_stack_bytes": 192,
+          "all_gpr_except_rsp_equal": true,
+          "all_xmm_equal": true,
+          "returned": true,
+          "iat_rva": 39448744
+        },
+        {
+          "site_rva": 4149,
+          "length": 6,
+          "module": "kernel32.dll",
+          "name": "WriteFile",
+          "continuation_rva": 4155,
+          "call_rva": 4149,
+          "sequence": 107,
+          "api_sequence": 182,
+          "wrapper_instructions": 75,
+          "private_stack_writes": 36,
+          "compared_stack_bytes": 192,
+          "all_gpr_except_rsp_equal": true,
+          "all_xmm_equal": true,
+          "returned": true,
+          "iat_rva": 39448752
+        },
+        {
+          "site_rva": 4157,
+          "length": 6,
+          "module": "kernel32.dll",
+          "name": "ExitProcess",
+          "continuation_rva": 4163,
+          "call_rva": 4157,
+          "sequence": 239,
+          "api_sequence": 335,
+          "wrapper_instructions": 96,
+          "private_stack_writes": 40,
+          "compared_stack_bytes": 192,
+          "all_gpr_except_rsp_equal": true,
+          "all_xmm_equal": true,
+          "returned": false,
+          "iat_rva": 39448760
+        },
+        {
+          "site_rva": 152158,
+          "length": 6,
+          "module": "kernel32.dll",
+          "name": "HeapFree",
+          "continuation_rva": 152164,
+          "call_rva": 152159,
+          "sequence": 1899,
+          "api_sequence": 1964,
+          "wrapper_instructions": 65,
+          "private_stack_writes": 28,
+          "compared_stack_bytes": 256,
+          "all_gpr_except_rsp_equal": true,
+          "all_xmm_equal": true,
+          "returned": true,
+          "iat_rva": 39448768
+        }
+      ],
+      "imports": [
+        [
+          "kernel32.dll",
+          "ExitProcess"
+        ],
+        [
+          "kernel32.dll",
+          "GetStdHandle"
+        ],
+        [
+          "kernel32.dll",
+          "HeapFree"
+        ],
+        [
+          "kernel32.dll",
+          "WriteFile"
+        ]
+      ],
+      "additional_imports": [
+        [
+          "kernel32.dll",
+          "HeapFree"
+        ]
+      ],
+      "recovered_imports": [
+        {
+          "module": "kernel32.dll",
+          "name": "ExitProcess",
+          "iat_rva": 39448760
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "GetStdHandle",
+          "iat_rva": 39448744
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "HeapFree",
+          "iat_rva": 39448768
+        },
+        {
+          "module": "kernel32.dll",
+          "name": "WriteFile",
+          "iat_rva": 39448752
+        }
+      ],
+      "retained_imports": [
+        {
+          "module": "kernel32.dll",
+          "name": "WriteFile",
+          "iat_rva": 15106048
+        }
+      ],
+      "unresolved_transitions": [
+        {
+          "sequence": 1469,
+          "module": "ntdll.dll",
+          "name": "RtlEnterCriticalSection",
+          "address": 6442506112,
+          "continuation": 5368864945,
+          "possible_site_rvas": [
+            155820
+          ],
+          "reason": [
+            "argument_or_nonvolatile_gpr",
+            "caller_stack"
+          ]
+        },
+        {
+          "sequence": 1557,
+          "module": "ntdll.dll",
+          "name": "RtlLeaveCriticalSection",
+          "address": 6442506368,
+          "continuation": 5368865002,
+          "possible_site_rvas": [
+            155877
+          ],
+          "reason": [
+            "argument_or_nonvolatile_gpr"
+          ]
+        },
+        {
+          "sequence": 1698,
+          "module": "ntdll.dll",
+          "name": "RtlEnterCriticalSection",
+          "address": 6442506112,
+          "continuation": 5368865012,
+          "possible_site_rvas": [
+            155887
+          ],
+          "reason": [
+            "argument_or_nonvolatile_gpr"
+          ]
+        },
+        {
+          "sequence": 1860,
+          "module": "ntdll.dll",
+          "name": "RtlLeaveCriticalSection",
+          "address": 6442506368,
+          "continuation": 5368865078,
+          "possible_site_rvas": [
+            155953
+          ],
+          "reason": [
+            "argument_or_nonvolatile_gpr"
+          ]
+        },
+        {
+          "sequence": 2470,
+          "address": 6442669087,
+          "reason": "not_a_named_export",
+          "from": 5368865096,
+          "possible_site_rvas": []
+        }
+      ],
+      "output_sha256": "90818a1134f03311d5014a663a177e13cdf5f702c2681e9fe53bae67e65d3ab9",
+      "output_size": 39429632,
+      "native_runs": [
+        {
+          "exit_code": 0,
+          "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+          "stderr_hex": "",
+          "seconds": 1.692533
+        },
+        {
+          "exit_code": 0,
+          "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+          "stderr_hex": "",
+          "seconds": 0.026926
+        },
+        {
+          "exit_code": 0,
+          "stdout_hex": "48656c6c6f2c20776f726c64210d0a",
+          "stderr_hex": "",
+          "seconds": 0.027859
+        }
+      ],
+      "native_median_seconds": 0.027859,
+      "replay_seconds": 0.409,
+      "replay_apis": [
+        [
+          "kernel32.dll",
+          "GetStdHandle"
+        ],
+        [
+          "kernel32.dll",
+          "WriteFile"
+        ],
+        [
+          "kernel32.dll",
+          "ExitProcess"
+        ]
+      ],
+      "checks": {
+        "retained_import_slots_preserved": true,
+        "baseline_imports_recovered": true,
+        "native_output_matches_baseline": true,
+        "fresh_sogen_execution_passed": true,
+        "fresh_api_sequence_matches_baseline": true,
+        "fresh_sogen_stdout_matches_baseline": true
+      },
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "validation": {
+    "python_recovery_tests": 16,
+    "cpp_dynamic_hook_tests": 1,
+    "oep_regression_tests": 5,
+    "repository_smoke": "passed",
+    "changed_cpp_tidy": "passed",
+    "full_tidy": "blocked by pre-existing readability-redundant-typename errors in platform/port.hpp:83 and platform/process.hpp:1261,1272"
+  }
+}
