@@ -11,7 +11,7 @@ namespace sogen
     class oep_detector
     {
       public:
-        oep_detector(windows_emulator& win, const std::filesystem::path& path);
+        oep_detector(windows_emulator& win, const std::filesystem::path& path, std::function<void(uint64_t)> on_candidate = {});
         oep_detector(const oep_detector&) = delete;
         oep_detector& operator=(const oep_detector&) = delete;
         void finish(bool completed);
@@ -28,6 +28,7 @@ namespace sogen
         uint64_t previous_block_{};
         uint64_t observed_blocks_{};
         uint64_t restored_stack_blocks_{};
+        std::function<void(uint64_t)> on_candidate_{};
         scoped_hook entry_hook_{};
         scoped_hook block_hook_{};
     };

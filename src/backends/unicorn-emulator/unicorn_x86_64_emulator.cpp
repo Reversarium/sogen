@@ -223,6 +223,12 @@ namespace sogen::unicorn
 
             void start(const size_t count) override
             {
+                if (translation_hooks_changed_)
+                {
+                    // Cached Unicorn blocks retain the hook instrumentation present when they were translated.
+                    uce(uc_ctl_flush_tb(*this));
+                    translation_hooks_changed_ = false;
+                }
                 const auto start = this->violation_ip_.value_or(this->read_instruction_pointer());
                 this->violation_ip_ = std::nullopt;
 
@@ -656,6 +662,7 @@ namespace sogen::unicorn
 
             hook_container* create_hook_container()
             {
+                translation_hooks_changed_ = true;
                 auto container = std::make_unique<hook_container>();
                 auto* ptr = container.get();
                 this->hooks_.push_back(std::move(container));
@@ -747,6 +754,7 @@ namespace sogen::unicorn
             }
 
           private:
+            bool translation_hooks_changed_{};
             mutable bool has_snapshots_{false};
             uc_engine* uc_{};
             std::optional<uint64_t> violation_ip_{};

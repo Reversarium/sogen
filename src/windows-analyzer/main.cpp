@@ -16,6 +16,7 @@
 #include "stdout_file_reporter.hpp"
 #include "tenet_tracer.hpp"
 #include "oep_detector.hpp"
+#include "import_trace.hpp"
 
 #include <utils/finally.hpp>
 #include <utils/interupt_handler.hpp>
@@ -68,6 +69,8 @@ namespace sogen
             std::filesystem::path report_path{};
             std::filesystem::path stdout_path{};
             std::filesystem::path oep_report_path{};
+            std::filesystem::path import_trace_path{};
+            bool import_from_entry{false};
             std::string report_format{"jsonl"};
             std::string whp_execution_hook_mode{"auto"};
             std::optional<backend_type> backend{};
@@ -363,7 +366,7 @@ namespace sogen
             }
         }
 
-        bool run_emulation(const analysis_context& c, const analysis_options& options)
+        bool run_emulation(const analysis_context& c, const analysis_options& options, import_trace* imports)
         {
             auto& win_emu = *c.win_emu;
 
@@ -430,7 +433,10 @@ namespace sogen
                         debugger::enter_breakpoint(win_emu, win_emu.mod_manager.executable->entry_point);
                     }
 #endif
-                    win_emu.start();
+                    do
+                    {
+                        win_emu.start();
+                    } while (signals_received == 0 && imports && imports->resume_pending());
                 }
 
                 if (signals_received > 0)
@@ -675,9 +681,23 @@ namespace sogen
 
             register_analysis_callbacks(context);
             std::optional<oep_detector> oep{};
+            std::optional<import_trace> imports{};
+            if (!options.import_trace_path.empty())
+            {
+                if (options.oep_report_path.empty() && !options.import_from_entry)
+                {
+                    throw std::runtime_error("Import tracing requires --oep-report or --import-from-entry");
+                }
+                imports.emplace(*win_emu, options.import_trace_path, options.import_from_entry);
+            }
             if (!options.oep_report_path.empty())
             {
-                oep.emplace(*win_emu, options.oep_report_path);
+                oep.emplace(*win_emu, options.oep_report_path, [&](uint64_t address) {
+                    if (imports && !options.import_from_entry)
+                    {
+                        imports->request_start(address);
+                    }
+                });
             }
             watch_system_objects(context, options.modules, options.verbose_logging, options.concise_logging);
 
@@ -839,10 +859,14 @@ namespace sogen
                 }
             }
 
-            const auto success = run_emulation(context, options);
+            const auto success = run_emulation(context, options, imports ? &*imports : nullptr);
             if (oep)
             {
                 oep->finish(success);
+            }
+            if (imports)
+            {
+                imports->finish(success);
             }
             return success;
         }
@@ -911,6 +935,8 @@ namespace sogen
             app.add_option("--report-format", options.report_format, "Report format (supported: jsonl)")->capture_default_str();
             app.add_option("--stdout", options.stdout_path, "Write guest console output to a file");
             app.add_option("--oep-report", options.oep_report_path, "Find x64 entry handoff candidates and write JSONL evidence");
+            app.add_option("--import-trace", options.import_trace_path, "Capture image and import linkage evidence after an entry handoff");
+            app.add_flag("--import-from-entry", options.import_from_entry, "Trace imports from the PE entry for an unprotected control");
             app.add_option("--whp-exec-hook", options.whp_execution_hook_mode, "WHP memory execution hook mode")
                 ->capture_default_str()
                 ->check(CLI::IsMember({"auto", "int3"}));

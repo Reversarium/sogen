@@ -12,9 +12,10 @@ namespace sogen
                                            x86_register::xmm14, x86_register::xmm15};
     }
 
-    oep_detector::oep_detector(windows_emulator& win, const std::filesystem::path& path)
+    oep_detector::oep_detector(windows_emulator& win, const std::filesystem::path& path, std::function<void(uint64_t)> on_candidate)
         : win_(win),
-          out_(path)
+          out_(path),
+          on_candidate_(std::move(on_candidate))
     {
         if (!out_)
         {
@@ -110,6 +111,10 @@ namespace sogen
                     out_ << "null";
                 }
                 out_ << "}\n" << std::flush;
+                if (on_candidate_)
+                {
+                    on_candidate_(address);
+                }
             }
         }
         previous_block_ = address;
