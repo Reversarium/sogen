@@ -17,6 +17,8 @@
 #include "stdout_file_reporter.hpp"
 #include "tenet_tracer.hpp"
 #include "oep_detector.hpp"
+#include <runtime_snapshot.hpp>
+#include <iomanip>
 #include "import_trace.hpp"
 
 #include <utils/finally.hpp>
@@ -70,6 +72,9 @@ namespace sogen
             std::filesystem::path report_path{};
             std::filesystem::path stdout_path{};
             std::filesystem::path oep_report_path{};
+            std::filesystem::path runtime_snapshot_path{};
+            bool snapshot_at_entry{false};
+            std::vector<std::pair<uint64_t, uint64_t>> reserved_ranges{};
             std::filesystem::path import_trace_path{};
             bool import_from_entry{false};
             std::string report_format{"jsonl"};
@@ -624,6 +629,13 @@ namespace sogen
             const auto concise_logging = options.concise_logging;
             const auto win_emu = setup_emulator(options, args);
             apply_registry_files(*win_emu, options);
+            for (const auto& [base, size] : options.reserved_ranges)
+            {
+                if (!size || !win_emu->memory.allocate_memory(base, static_cast<size_t>(size), memory_permission::none, true))
+                {
+                    throw std::runtime_error("Cannot reserve requested address range before loading");
+                }
+            }
             context.win_emu = win_emu.get();
 
             std::vector<std::unique_ptr<analysis_reporter>> reporters{};
@@ -691,6 +703,44 @@ namespace sogen
             }
 
             register_analysis_callbacks(context);
+            std::optional<runtime_snapshot_metrics> captured_snapshot{};
+            std::filesystem::path snapshot_pending{};
+            std::chrono::steady_clock::time_point execution_start{};
+            double handoff_ms{};
+            if (!options.runtime_snapshot_path.empty())
+            {
+                if (options.oep_report_path.empty() && !options.snapshot_at_entry)
+                {
+                    throw std::runtime_error("Runtime snapshot export requires --oep-report or --snapshot-at-entry");
+                }
+                snapshot_pending = options.runtime_snapshot_path;
+                snapshot_pending += ".partial";
+                if (std::filesystem::exists(options.runtime_snapshot_path) || std::filesystem::exists(snapshot_pending) ||
+                    std::filesystem::exists(options.runtime_snapshot_path.string() + ".json"))
+                {
+                    throw std::runtime_error("Snapshot output already exists");
+                }
+            }
+            else if (options.snapshot_at_entry)
+            {
+                throw std::runtime_error("--snapshot-at-entry requires --runtime-snapshot");
+            }
+            const auto capture_snapshot = [&](const uint64_t address) {
+                if (!options.runtime_snapshot_path.empty() && !captured_snapshot)
+                {
+                    handoff_ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - execution_start).count();
+                    captured_snapshot = write_runtime_snapshot(*win_emu, address, snapshot_pending);
+                }
+            };
+            scoped_hook snapshot_entry_hook{};
+            if (options.snapshot_at_entry)
+            {
+                snapshot_entry_hook = scoped_hook(
+                    win_emu->emu(), win_emu->emu().hook_memory_execution(
+                                        win_emu->mod_manager.executable->entry_point, [&](cpu_interface& cpu, const uint64_t address) {
+                                            win_emu->dispatch_on_cpu(cpu, [&] { capture_snapshot(address); });
+                                        }));
+            }
             std::optional<oep_detector> oep{};
             std::optional<import_trace> imports{};
             if (!options.import_trace_path.empty())
@@ -704,6 +754,10 @@ namespace sogen
             if (!options.oep_report_path.empty())
             {
                 oep.emplace(*win_emu, options.oep_report_path, [&](uint64_t address) {
+                    if (!options.snapshot_at_entry)
+                    {
+                        capture_snapshot(address);
+                    }
                     if (imports && !options.import_from_entry)
                     {
                         imports->request_start(address);
@@ -870,7 +924,9 @@ namespace sogen
                 }
             }
 
+            execution_start = std::chrono::steady_clock::now();
             const auto success = run_emulation(context, options, imports ? &*imports : nullptr);
+            const auto execution_ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - execution_start).count();
             if (oep)
             {
                 oep->finish(success);
@@ -878,6 +934,34 @@ namespace sogen
             if (imports)
             {
                 imports->finish(success);
+            }
+            if (!options.runtime_snapshot_path.empty())
+            {
+                if (!success || !captured_snapshot || (!options.snapshot_at_entry && (!oep || !oep->has_unique_candidate())))
+                {
+                    std::error_code ignored{};
+                    std::filesystem::remove(snapshot_pending, ignored);
+                    throw std::runtime_error("Snapshot was not published: handoff was absent, ambiguous, or execution failed");
+                }
+                std::filesystem::rename(snapshot_pending, options.runtime_snapshot_path);
+                const auto& metrics = *captured_snapshot;
+                std::ofstream report(options.runtime_snapshot_path.string() + ".json");
+                report.exceptions(std::ios::badbit | std::ios::failbit);
+                report << R"({"capture_profile":"sogen-x64-v1","handoff_ms":)" << handoff_ms << R"(,"execution_ms":)" << execution_ms
+                       << R"(,"capture_ms":)" << metrics.capture_ms << R"(,"file_bytes":)" << metrics.file_bytes << R"(,"mapped_bytes":)"
+                       << metrics.mapped_bytes << R"(,"captured_bytes":)" << metrics.captured_bytes << R"(,"modules":)" << metrics.modules
+                       << R"(,"registers":)" << metrics.registers << R"(,"regions":)" << metrics.regions << R"(,"memory_fnv1a64":")"
+                       << std::hex << std::setw(16) << std::setfill('0') << metrics.memory_hash << std::dec
+                       << R"(","unavailable_registers":[)";
+                for (size_t i = 0; i < metrics.unavailable_registers.size(); ++i)
+                {
+                    if (i != 0)
+                    {
+                        report << ',';
+                    }
+                    report << std::quoted(metrics.unavailable_registers.at(i));
+                }
+                report << "]}\n";
             }
             return success;
         }
@@ -946,6 +1030,11 @@ namespace sogen
             app.add_option("--report-format", options.report_format, "Report format (supported: jsonl)")->capture_default_str();
             app.add_option("--stdout", options.stdout_path, "Write guest console output to a file");
             app.add_option("--oep-report", options.oep_report_path, "Find x64 entry handoff candidates and write JSONL evidence");
+            app.add_option("--runtime-snapshot", options.runtime_snapshot_path, "Export an offline snapshot at the unique OEP handoff");
+            app.add_flag("--snapshot-at-entry", options.snapshot_at_entry, "Capture at the PE entry instead of detecting a handoff");
+            app.add_option("--reserve-range", options.reserved_ranges, "Reserve guest addresses before loading (BASE SIZE)")
+                ->type_name("BASE SIZE")
+                ->allow_extra_args(false);
             app.add_option("--import-trace", options.import_trace_path, "Capture image and import linkage evidence after an entry handoff");
             app.add_flag("--import-from-entry", options.import_from_entry, "Trace imports from the PE entry for an unprotected control");
             app.add_option("--whp-exec-hook", options.whp_execution_hook_mode, "WHP memory execution hook mode")
