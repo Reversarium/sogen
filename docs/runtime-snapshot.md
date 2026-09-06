@@ -73,12 +73,13 @@ python tools/capture_runtime_snapshots.py `
   --inspector D:/RE/REProjects/core/build/ninja-debug/reversarium_snapshot_inspect.exe `
   --emulation-root D:/RE/REProjects/sogen-root `
   --fixtures-dir D:/RE/REProjects/.tmp/REV-412-OEP `
+  --fixtures hello-x64-351.vmp.exe hello-x64-381.vmp.exe hello-x64-396.vmp.exe `
   --output D:/RE/REProjects/.tmp/REV-426-results-final
 ```
 
-`--fixtures-dir` locates the binaries. `--fixtures` optionally selects filenames
-inside that directory; omitting it runs the three VMP fixtures listed in `--help`.
-For example, add `--fixtures hello-x64-396.vmp.exe` to run only the 3.9.6 fixture.
+`--fixtures-dir` locates the binaries. `--fixtures` is required and lists the
+filenames to run inside that directory. For only the 3.9.6 fixture, replace the
+three names above with `--fixtures hello-x64-396.vmp.exe`.
 
 The runner creates a new `--output` directory so results from different runs
 cannot overwrite or mix with each other. Each fixture gets:

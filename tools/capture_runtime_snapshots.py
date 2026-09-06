@@ -1,4 +1,4 @@
-"""Capture REV-426 fixtures and verify them through the offline core adapter."""
+"""Capture specified fixtures and verify them through the offline core adapter."""
 import argparse
 import ctypes as C
 from ctypes import wintypes as W
@@ -12,8 +12,6 @@ import statistics
 import struct
 import subprocess
 import time
-
-FIXTURES = ["hello-x64-351.vmp.exe", "hello-x64-381.vmp.exe", "hello-x64-396.vmp.exe"]
 
 
 def sha(path):
@@ -201,9 +199,8 @@ def main():
     parser.add_argument("--emulation-root", type=Path, required=True)
     parser.add_argument("--fixtures-dir", type=Path, required=True, metavar="DIRECTORY",
                         help="Directory containing the fixture EXE files")
-    parser.add_argument("--fixtures", nargs="+", default=FIXTURES, metavar="NAME",
-                        help="Filenames to run inside --fixtures-dir; defaults to: "
-                             + ", ".join(FIXTURES))
+    parser.add_argument("--fixtures", nargs="+", required=True, metavar="NAME",
+                        help="Filenames to run inside --fixtures-dir")
     parser.add_argument("--output", type=Path, required=True, metavar="NEW_DIRECTORY",
                         help="Create a new directory for this run's snapshots, logs and metrics")
     parser.add_argument("--timeout", type=float, default=900)
