@@ -14,6 +14,7 @@ namespace sogen
         uint64_t mapped_bytes{};
         uint64_t captured_bytes{};
         uint64_t file_bytes{};
+        // FNV-1a 64-bit offset basis, shared with core's snapshot inspector.
         uint64_t memory_hash{14695981039346656037ULL};
         uint32_t modules{};
         uint32_t registers{};

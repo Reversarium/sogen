@@ -199,11 +199,16 @@ def main():
     parser.add_argument("--analyzer", type=Path, required=True)
     parser.add_argument("--inspector", type=Path, required=True)
     parser.add_argument("--emulation-root", type=Path, required=True)
-    parser.add_argument("--fixtures-dir", type=Path, required=True)
-    parser.add_argument("--fixtures", nargs="+", default=FIXTURES)
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--fixtures-dir", type=Path, required=True, metavar="DIRECTORY",
+                        help="Directory containing the fixture EXE files")
+    parser.add_argument("--fixtures", nargs="+", default=FIXTURES, metavar="NAME",
+                        help="Filenames to run inside --fixtures-dir; defaults to: "
+                             + ", ".join(FIXTURES))
+    parser.add_argument("--output", type=Path, required=True, metavar="NEW_DIRECTORY",
+                        help="Create a new directory for this run's snapshots, logs and metrics")
     parser.add_argument("--timeout", type=float, default=900)
-    parser.add_argument("--native-repeats", type=int, default=3)
+    parser.add_argument("--native-repeats", type=int, default=3,
+                        help="Native timing runs per fixture; report their median (default: 3)")
     args = parser.parse_args()
     if args.native_repeats < 1:
         parser.error("--native-repeats must be positive")

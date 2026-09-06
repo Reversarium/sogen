@@ -40,8 +40,10 @@ including R10 and R11, are captured as observed at the handoff.
 The versioned `RVSNAP01` binary format is read by
 `Reversarium/core/tools/runtime-snapshot/snapshot_file.cc`. Architectural
 register names are stored instead of core's build-dependent register IDs.
-An adjacent `.json` file records capture timings, counts, missing registers,
-and a memory checksum. The fixture runner adds SHA-256 file identities.
+An adjacent `capture.rvs.json` report records timings, counts, missing registers,
+and an FNV-1a 64-bit checksum of captured memory bytes in file order. The runner
+compares that checksum with core's memory readback to check the transfer. The
+fixture runner also records SHA-256 hashes of the complete files and tools.
 
 ## One capture
 
@@ -74,11 +76,23 @@ python tools/capture_runtime_snapshots.py `
   --output D:/RE/REProjects/.tmp/REV-426-results-final
 ```
 
-The output directory must be new. The runner measures three native executions
-per fixture, then two captures. For the second capture it reserves each relocatable
-module's first-run address range before loading. Modules whose PE headers
-require a fixed base are recorded and kept at that base. Sogen's normal loader must
-relocate the modules; the exporter never edits addresses in a dump.
+`--fixtures-dir` locates the binaries. `--fixtures` optionally selects filenames
+inside that directory; omitting it runs the three VMP fixtures listed in `--help`.
+For example, add `--fixtures hello-x64-396.vmp.exe` to run only the 3.9.6 fixture.
+
+The runner creates a new `--output` directory so results from different runs
+cannot overwrite or mix with each other. Each fixture gets:
+
+1. Three native executions to measure host runtime. Their median reduces timing
+   noise. Set `--native-repeats 1` to skip the timing repeats.
+2. One sogen capture at the normal load addresses, followed by offline import.
+3. One capture/import with changed module addresses to expose assumptions about
+   fixed load bases. Before loading, the runner reserves each relocatable module's
+   first-run range so sogen's loader must choose another address and relocate it.
+
+Modules whose PE headers require a fixed base remain there and are recorded as
+exceptions. These repeated runs validate the implementation; exporting one
+snapshot only requires the single analyzer run shown above.
 
 Each run records the exact command, tool and fixture hashes, exit status, peak
 working set/commit, OEP evidence, and output comparison. After the emulator
