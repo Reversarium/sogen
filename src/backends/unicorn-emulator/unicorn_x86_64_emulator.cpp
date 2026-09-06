@@ -351,7 +351,7 @@ namespace sogen::unicorn
 
                 uc_x86_mmr gdt{};
 
-                this->read_register(x86_register::gdtr, &gdt, sizeof(gdt));
+                this->read_register(static_cast<x86_register>(reg), &gdt, sizeof(gdt));
 
                 table.base = gdt.base;
                 table.limit = gdt.limit;

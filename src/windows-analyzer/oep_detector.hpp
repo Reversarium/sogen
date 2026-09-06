@@ -16,6 +16,11 @@ namespace sogen
         oep_detector& operator=(const oep_detector&) = delete;
         void finish(bool completed);
 
+        bool has_unique_candidate() const
+        {
+            return tracker_.candidates().size() == 1;
+        }
+
       private:
         std::optional<entry_context> read_context() const;
         void observe_block(uint64_t address);
